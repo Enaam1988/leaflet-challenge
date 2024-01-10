@@ -21,6 +21,16 @@ legend.onAdd = function (map) {
     return div;
 };
 legend.addTo(map);
+// Function to calculate the radius based on magnitude
+function getRadius(magnitude) {
+    // Handle special case for magnitude zero
+    if (magnitude === 0) {
+        return 1; // Set a minimum radius for magnitude 0 earthquakes
+    }
+    
+    // Calculate radius using Leaflet's built-in getRadius method (in meters)
+    return Math.pow(2, magnitude) ;
+}
 
 // Use D3 to load earthquake data from the URL
 d3.json('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson')
@@ -28,7 +38,7 @@ d3.json('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geoj
         L.geoJSON(data.features, {
             pointToLayer: function (feature, latlng) {
                 // Calculate the radius based on magnitude
-                let radius = Math.max(Math.pow(2, feature.properties.mag), 4);
+                let radius =getRadius(feature.properties.mag)
 
                 // Calculate the color based on depth
                 let depth = feature.geometry.coordinates[2];
